@@ -13,13 +13,11 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Typeface;
-import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -522,19 +520,12 @@ public class SpotlightView extends FrameLayout {
 
         PorterDuffColorFilter porterDuffColorFilter = new PorterDuffColorFilter(lineAndArcColor,
                 PorterDuff.Mode.SRC_ATOP);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AnimatedVectorDrawable avd = (AnimatedVectorDrawable)
-                    ContextCompat.getDrawable(activity, R.drawable.avd_spotlight_arc);
-            avd.setColorFilter(porterDuffColorFilter);
-            mImageView.setImageDrawable(avd);
-            avd.start();
-        } else {
-            AnimatedVectorDrawableCompat avdc =
-                    AnimatedVectorDrawableCompat.create(activity, R.drawable.avd_spotlight_arc);
-            avdc.setColorFilter(porterDuffColorFilter);
-            mImageView.setImageDrawable(avdc);
-            avdc.start();
-        }
+
+        AnimatedVectorDrawableCompat animatedVectorDrawableCompat = AnimatedVectorDrawableCompat.create(activity, R.drawable.avd_spotlight_arc);
+        assert animatedVectorDrawableCompat != null;
+        animatedVectorDrawableCompat.setColorFilter(porterDuffColorFilter);
+        mImageView.setImageDrawable(animatedVectorDrawableCompat);
+        animatedVectorDrawableCompat.start();
 
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
@@ -931,6 +922,21 @@ public class SpotlightView extends FrameLayout {
         }
     }
 
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (dismissOnBackPress) {
+            if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+                dismiss();
+                return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    public void logger(String s) {
+        Log.d("Spotlight", s);
+    }
+
     /**
      * Builder Class
      */
@@ -1092,21 +1098,5 @@ public class SpotlightView extends FrameLayout {
             return spotlightView;
         }
 
-    }
-
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (dismissOnBackPress) {
-            if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-                dismiss();
-                return true;
-            }
-        }
-        return super.dispatchKeyEvent(event);
-    }
-
-    public void logger(String s) {
-        Log.d("Spotlight", s);
     }
 }
