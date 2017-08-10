@@ -16,6 +16,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v7.widget.AppCompatImageView;
@@ -54,6 +55,7 @@ public class SpotlightView extends FrameLayout {
     /**
      * OverLay color
      */
+    @ColorInt
     private int maskColor = 0x70000000;
 
     /**
@@ -576,7 +578,7 @@ public class SpotlightView extends FrameLayout {
         NormalLineAnimDrawable animDrawable1 = new NormalLineAnimDrawable(p);
         if (lineAnimationDuration > 0)
             animDrawable1.setLineAnimDuration(lineAnimationDuration);
-        if (Build.VERSION.SDK_INT < 16) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             mView.setBackgroundDrawable(animDrawable1);
         } else {
             mView.setBackground(animDrawable1);
